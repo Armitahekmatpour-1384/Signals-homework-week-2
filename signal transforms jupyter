@@ -1,0 +1,109 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib
+
+# تنظیم فونت
+matplotlib.rcParams['font.family'] = 'DejaVu Sans'
+matplotlib.rcParams['font.size'] = 12
+
+# تعریف سیگنال اصلی گسسته
+n_original = np.array([-2, -1, 0, 1, 2])
+x_n_original = np.array([0, 1, 2, 1, 0])
+
+# تعریف سیگنال اصلی پیوسته (تابع مستطیلی)
+def x_t_original(t):
+    return np.where((t >= -0.5) & (t <= 0.5), 1, 0)
+
+print("📊 رسم ۶ نمودار تبدیل‌های سیگنال...")
+
+# 1. تبدیل اول: X[n - 2]
+plt.figure(figsize=(10, 6))
+n_new = n_original + 2
+plt.stem(n_new, x_n_original, linefmt='b-', markerfmt='bo', basefmt='k-')
+plt.title('تبدیل ۱: X[n - 2]', fontsize=14, fontweight='bold')
+plt.xlabel('n')
+plt.ylabel('X[n-2]')
+plt.grid(True, alpha=0.3)
+plt.axhline(y=0, color='k', linewidth=0.5)
+plt.axvline(x=0, color='k', linewidth=0.5)
+plt.show()
+
+# 2. تبدیل دوم: X[3/2n + 3]
+plt.figure(figsize=(10, 6))
+n_range = np.arange(-6, 7)
+x_result = np.zeros_like(n_range, dtype=float)
+
+for i, n_val in enumerate(n_range):
+    original_index = (3/2) * n_val + 3
+    if original_index.is_integer() and original_index in n_original:
+        idx = np.where(n_original == original_index)[0][0]
+        x_result[i] = x_n_original[idx]
+
+plt.stem(n_range, x_result, linefmt='g-', markerfmt='go', basefmt='k-')
+plt.title('تبدیل ۲: X[3/2n + 3]', fontsize=14, fontweight='bold')
+plt.xlabel('n')
+plt.ylabel('X[3/2n+3]')
+plt.grid(True, alpha=0.3)
+plt.axhline(y=0, color='k', linewidth=0.5)
+plt.axvline(x=0, color='k', linewidth=0.5)
+plt.show()
+
+# 3. تبدیل سوم: X[n] + X[2n]^{-3}
+plt.figure(figsize=(10, 6))
+n_2n = n_original[n_original % 2 == 0]
+x_2n = x_n_original[n_original % 2 == 0]
+x_2n_inv = np.array([val**(-3) if val != 0 else 0 for val in x_2n])
+
+plt.stem(n_original, x_n_original, linefmt='b-', markerfmt='bo', basefmt='k-', label='X[n]')
+plt.stem(n_2n, x_2n_inv, linefmt='r-', markerfmt='ro', basefmt='k-', label='X[2n]^{-3}')
+plt.title('تبدیل ۳: X[n] + X[2n]^{-3}', fontsize=14, fontweight='bold')
+plt.xlabel('n')
+plt.ylabel('مقدار')
+plt.grid(True, alpha=0.3)
+plt.legend()
+plt.axhline(y=0, color='k', linewidth=0.5)
+plt.axvline(x=0, color='k', linewidth=0.5)
+plt.show()
+
+# 4. تبدیل چهارم: X(3t - 0.5)
+plt.figure(figsize=(10, 6))
+t = np.linspace(-1, 1.5, 1000)
+x_transformed = x_t_original(3*t - 0.5)
+plt.plot(t, x_transformed, 'b-', linewidth=2)
+plt.title('تبدیل ۴: X(3t - 0.5)', fontsize=14, fontweight='bold')
+plt.xlabel('t')
+plt.ylabel('X(3t-0.5)')
+plt.grid(True, alpha=0.3)
+plt.axhline(y=0, color='k', linewidth=0.5)
+plt.axvline(x=0, color='k', linewidth=0.5)
+plt.ylim(-0.2, 1.5)
+plt.show()
+
+# 5. تبدیل پنجم: X(0.5t + 3)
+plt.figure(figsize=(10, 6))
+t = np.linspace(-8, 2, 1000)
+x_transformed = x_t_original(0.5*t + 3)
+plt.plot(t, x_transformed, 'g-', linewidth=2)
+plt.title('تبدیل ۵: X(0.5t + 3)', fontsize=14, fontweight='bold')
+plt.xlabel('t')
+plt.ylabel('X(0.5t+3)')
+plt.grid(True, alpha=0.3)
+plt.axhline(y=0, color='k', linewidth=0.5)
+plt.axvline(x=0, color='k', linewidth=0.5)
+plt.ylim(-0.2, 1.5)
+plt.show()
+
+# 6. تبدیل ششم: X(t - 2) - t
+plt.figure(figsize=(10, 6))
+t = np.linspace(0, 4, 1000)
+x_transformed = x_t_original(t - 2) - t
+plt.plot(t, x_transformed, 'purple', linewidth=2)
+plt.title('تبدیل ۶: X(t - 2) - t', fontsize=14, fontweight='bold')
+plt.xlabel('t')
+plt.ylabel('X(t-2)-t')
+plt.grid(True, alpha=0.3)
+plt.axhline(y=0, color='k', linewidth=0.5)
+plt.axvline(x=0, color='k', linewidth=0.5)
+plt.show()
+
+print("✅ تمام نمودارها با موفقیت رسم شدند!")
